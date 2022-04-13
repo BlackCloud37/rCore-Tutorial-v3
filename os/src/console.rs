@@ -79,5 +79,12 @@ impl log::Log for SimpleLogger {
 pub fn init() {
     static LOGGER: SimpleLogger = SimpleLogger {};
     log::set_logger(&LOGGER).unwrap();
-    log::set_max_level(log::LevelFilter::Trace);
+    log::set_max_level(match option_env!("LOG") {
+        Some("error") => log::LevelFilter::Error,
+        Some("warn") => log::LevelFilter::Warn,
+        Some("info") => log::LevelFilter::Info,
+        Some("debug") => log::LevelFilter::Debug,
+        Some("trace") => log::LevelFilter::Trace,
+        _ => log::LevelFilter::Off,
+    });
 }

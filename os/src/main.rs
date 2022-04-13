@@ -15,6 +15,8 @@
 
 use core::arch::global_asm;
 
+use log::{error, info, warn};
+
 #[macro_use]
 mod console;
 mod lang_items;
@@ -35,26 +37,29 @@ pub fn clear_bss() {
 #[no_mangle]
 pub fn rust_main() -> ! {
     extern "C" {
-        fn stext();               // begin addr of text segment
-        fn etext();               // end addr of text segment
-        fn srodata();             // start addr of Read-Only data segment
-        fn erodata();             // end addr of Read-Only data ssegment
-        fn sdata();               // start addr of data segment
-        fn edata();               // end addr of data segment
-        fn sbss();                // start addr of BSS segment
-        fn ebss();                // end addr of BSS segment
-        fn boot_stack();          // stack bottom
-        fn boot_stack_top();      // stack top
+        fn stext(); // begin addr of text segment
+        fn etext(); // end addr of text segment
+        fn srodata(); // start addr of Read-Only data segment
+        fn erodata(); // end addr of Read-Only data ssegment
+        fn sdata(); // start addr of data segment
+        fn edata(); // end addr of data segment
+        fn sbss(); // start addr of BSS segment
+        fn ebss(); // end addr of BSS segment
+        fn boot_stack(); // stack bottom
+        fn boot_stack_top(); // stack top
     }
     clear_bss();
-    println!("Hello, world!");
-    println!(".text [{:#x}, {:#x})", stext as usize, etext as usize);
-    println!(".rodata [{:#x}, {:#x})", srodata as usize, erodata as usize);
-    println!(".data [{:#x}, {:#x})", sdata as usize, edata as usize);
-    println!(
+    console::init();
+    info!(".text [{:#x}, {:#x})", stext as usize, etext as usize);
+    info!(".rodata [{:#x}, {:#x})", srodata as usize, erodata as usize);
+    info!(".data [{:#x}, {:#x})", sdata as usize, edata as usize);
+    info!(
         "boot_stack [{:#x}, {:#x})",
         boot_stack as usize, boot_stack_top as usize
     );
-    println!(".bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
+    info!(".bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
+    info!("Hello, world!");
+    warn!("Hello, world!");
+    error!("Hello, world!");
     panic!("Shutdown machine!");
 }
